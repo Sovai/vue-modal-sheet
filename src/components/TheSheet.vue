@@ -1,8 +1,6 @@
 <template>
   <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef">
-    <div class="bar">
-      {{ isDragging }}
-    </div>
+    <div class="bar"></div>
     <h2>Sheet Title</h2>
     <div class="sheet-content">
       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam doloribus
@@ -10,7 +8,7 @@
       itaque quae, suscipit architecto aspernatur dignissimos minus, possimus
       blanditiis ea?
       <button>Click</button>
-      <div style="margin: 30px 0" v-for="i in 10" :key="i">
+      <div style="margin: 30px 0" v-for="i in 5" :key="i">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati
         aliquam molestiae ad delectus maiores libero, suscipit nam ullam atque,
         temporibus, a ab harum cupiditate minus velit! Itaque explicabo sit
@@ -32,7 +30,6 @@ let axisY = ref(0);
 const DRAG_BAR_HEIGHT = 100;
 // const BOTTOM_PADDING = 500;
 
-let isDragging = ref(false);
 let windowHeight = ref(0);
 const { motionProperties } = useMotionProperties(sheetRef);
 const { set } = useSpring(motionProperties);
@@ -69,7 +66,6 @@ function calculateHeight() {
   });
 }
 function handleDrag(ctx) {
-  isDragging.value = true;
   const {
     movement: [x, y],
   } = ctx;
@@ -83,7 +79,6 @@ function handleDrag(ctx) {
   state.value = "dragging";
 }
 function handleDragEnd(ctx) {
-  isDragging.value = false;
   const {
     swipe: [sx, sy],
     movement: [x, y],
@@ -107,7 +102,7 @@ function handleDragEnd(ctx) {
   // Handle Drag
 
   // drag stop position > 1/3 of the sheet => set to Open
-  if (windowHeight.value - axisY.value > sheetContent.value / 3) {
+  if (windowHeight.value - axisY.value > windowHeight.value / 3) {
     setOpen();
     return;
   } else {
