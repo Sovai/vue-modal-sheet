@@ -1,6 +1,8 @@
 <template>
   <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef" :style="getStyle">
-    <div class="bar"></div>
+    <div class="bar">
+      {{ isDragging }}
+    </div>
     <h2>Sheet Title</h2>
     <div class="sheet-content">
       Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam doloribus
@@ -31,6 +33,7 @@ let axisY = ref(0);
 const DRAG_BAR_HEIGHT = 20;
 const BOTTOM_PADDING = 500;
 
+let isDragging = ref(false);
 let windowHeight = ref(0);
 const { motionProperties } = useMotionProperties(sheetRef);
 const { set } = useSpring(
@@ -109,6 +112,7 @@ function calculateHeight() {
   });
 }
 function handleDrag(ctx) {
+  isDragging.value = true;
   const {
     movement: [x, y],
   } = ctx;
@@ -122,6 +126,8 @@ function handleDrag(ctx) {
   state.value = "dragging";
 }
 function handleDragEnd(ctx) {
+  isDragging.value = false;
+
   //   Handle Swipe
   const {
     swipe: [sx, sy],
