@@ -1,5 +1,5 @@
 <template>
-  <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef" :style="getStyle">
+  <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef">
     <div class="bar">
       {{ isDragging }}
     </div>
@@ -21,7 +21,6 @@
 </template>
 
 <script setup>
-import { computed } from "@vue/reactivity";
 import { useGesture } from "@vueuse/gesture";
 import { useMotionProperties, useSpring } from "@vueuse/motion";
 import { nextTick, onMounted, ref } from "vue";
@@ -31,18 +30,12 @@ let sheetContent = ref(0);
 let state = ref();
 let axisY = ref(0);
 const DRAG_BAR_HEIGHT = 100;
-const BOTTOM_PADDING = 500;
+// const BOTTOM_PADDING = 500;
 
 let isDragging = ref(false);
 let windowHeight = ref(0);
 const { motionProperties } = useMotionProperties(sheetRef);
-const { set } = useSpring(
-  motionProperties
-  // , {
-  //   damping: 50,
-  //   stiffness: 220,
-  // }
-);
+const { set } = useSpring(motionProperties);
 
 onMounted(() => {
   calculateHeight();
@@ -52,29 +45,6 @@ useGesture(
   {
     onDrag: (ctx) => handleDrag(ctx),
     onDragEnd: (ctx) => handleDragEnd(ctx),
-
-    // onHover: ({ hovering }) =>
-    //   !hovering && set({ rotateX: 0, rotateY: 0, scale: 1 }),
-    // onMove: ({ xy: [px, py], dragging }) =>
-    //   !dragging &&
-    //   set({
-    //     rotateX: calcX(py, motionProperties.y),
-    //     rotateY: calcY(px, motionProperties.x),
-    //     scale: 1.2,
-    //   }),
-    // onPinch: ({ offset: [d, a] }) => {
-    //   console.log(d, a);
-    // },
-    // onWheel: ({ movement: [x, y] }) =>
-    //   boxSet({
-    //     y,
-    //     x,
-    //   }),
-    // onWheelEnd: () =>
-    //   boxSet({
-    //     y: 0,
-    //     x: 0,
-    //   }),
   },
   {
     domTarget: sheetRef,
@@ -87,13 +57,6 @@ useGesture(
   }
 );
 
-// const getStyle = computed(() => {
-//   console.log("sheetContent.value: ", sheetContent);
-//   return {
-//     height: `${sheetContent.value + BOTTOM_PADDING}px`,
-//   };
-// });
-
 function calculateHeight() {
   nextTick(() => {
     sheetContent.value = sheetRef.value.clientHeight;
@@ -105,9 +68,6 @@ function calculateHeight() {
     set({
       x: 0,
       y: axisY.value,
-      //    rotateX: 0,
-      //     rotateY: 0,
-      //      scale: 1
     });
   });
 }
