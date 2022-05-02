@@ -49,10 +49,7 @@ useGesture(
   {
     domTarget: sheetRef,
     drag: {
-      filterTaps: true,
-      preventWindowScrollY: true,
       useTouch: true,
-      delay: 5000,
     },
   }
 );
@@ -138,6 +135,8 @@ function setClose() {
 
 <style lang="scss" scoped>
 .sheet-wrapper {
+  touch-action: none;
+
   background-color: white;
   padding: 0 16px;
   box-shadow: 0px -6px 24px rgb(10 15 45 / 9%);
