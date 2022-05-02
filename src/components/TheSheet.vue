@@ -30,7 +30,7 @@ const sheetRef = ref();
 let sheetContent = ref(0);
 let state = ref();
 let axisY = ref(0);
-const DRAG_BAR_HEIGHT = 20;
+const DRAG_BAR_HEIGHT = 100;
 const BOTTOM_PADDING = 500;
 
 let isDragging = ref(false);
