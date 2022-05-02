@@ -87,11 +87,12 @@ function handleDrag(ctx) {
 }
 function handleDragEnd(ctx) {
   isDragging.value = false;
-
-  //   Handle Swipe
   const {
     swipe: [sx, sy],
+    movement: [x, y],
   } = ctx;
+
+  //   Handle Swipe
 
   // swipe down
   if (sy > 0) {
@@ -107,9 +108,6 @@ function handleDragEnd(ctx) {
   axisY.value = axisY.value + y;
 
   // Handle Drag
-  const {
-    movement: [x, y],
-  } = ctx;
 
   // drag stop position > 1/3 of the sheet => set to Open
   if (windowHeight.value - axisY.value > sheetContent.value / 3) {
