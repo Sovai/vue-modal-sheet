@@ -20,7 +20,11 @@
 
 <script setup>
 import { useGesture } from "@vueuse/gesture";
-import { useMotionProperties, useSpring } from "@vueuse/motion";
+import {
+  useMotionControls,
+  useMotionProperties,
+  useSpring,
+} from "@vueuse/motion";
 import { nextTick, onMounted, ref } from "vue";
 
 const sheetRef = ref();
@@ -31,8 +35,12 @@ const DRAG_BAR_HEIGHT = 100;
 // const BOTTOM_PADDING = 500;
 
 let windowHeight = ref(0);
-const { motionProperties } = useMotionProperties(sheetRef);
-const { set } = useSpring(motionProperties);
+
+const { motionProperties } = useMotionProperties(sheetRef, {
+  transition: "500ms ease-in-out",
+});
+// const { set } = useSpring(motionProperties);
+const { set } = useMotionControls(motionProperties);
 
 onMounted(() => {
   calculateHeight();
@@ -59,10 +67,16 @@ function calculateHeight() {
     // set sheet to hidden
     axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
 
-    set({
-      x: 0,
-      y: axisY.value,
-    });
+    set(
+      {
+        x: 0,
+        y: axisY.value,
+      },
+      null,
+      {
+        duration: 0,
+      }
+    );
   });
 }
 function handleDrag(ctx) {
