@@ -38,9 +38,7 @@ let windowHeight = ref(0);
 
 const { motionProperties } = useMotionProperties(sheetRef);
 console.log("motionProp: ", motionProperties);
-const { set } = useSpring(motionProperties, {
-  bounce: 0.2,
-});
+const { set } = useSpring(motionProperties);
 // const { set } = useMotionControls(motionProperties);
 
 onMounted(() => {
