@@ -36,9 +36,7 @@ const DRAG_BAR_HEIGHT = 100;
 
 let windowHeight = ref(0);
 
-const { motionProperties } = useMotionProperties(sheetRef, {
-  transition: "500ms ease-in-out",
-});
+const { motionProperties } = useMotionProperties(sheetRef);
 // const { set } = useSpring(motionProperties);
 const { set } = useMotionControls(motionProperties);
 
