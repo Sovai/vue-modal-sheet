@@ -8,7 +8,7 @@
       itaque quae, suscipit architecto aspernatur dignissimos minus, possimus
       blanditiis ea?
       <button>Click</button>
-      <div style="margin: 30px 0" v-for="i in 5" :key="i">
+      <div style="margin: 30px 0" v-for="i in 2" :key="i">
         Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati
         aliquam molestiae ad delectus maiores libero, suscipit nam ullam atque,
         temporibus, a ab harum cupiditate minus velit! Itaque explicabo sit
@@ -37,8 +37,11 @@ const DRAG_BAR_HEIGHT = 100;
 let windowHeight = ref(0);
 
 const { motionProperties } = useMotionProperties(sheetRef);
-// const { set } = useSpring(motionProperties);
-const { set } = useMotionControls(motionProperties);
+console.log("motionProp: ", motionProperties);
+const { set } = useSpring(motionProperties, {
+  bounce: 0.2,
+});
+// const { set } = useMotionControls(motionProperties);
 
 onMounted(() => {
   calculateHeight();
@@ -65,16 +68,10 @@ function calculateHeight() {
     // set sheet to hidden
     axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
 
-    set(
-      {
-        x: 0,
-        y: axisY.value,
-      },
-      null,
-      {
-        duration: 0,
-      }
-    );
+    set({
+      x: 0,
+      y: axisY.value,
+    });
   });
 }
 function handleDrag(ctx) {
