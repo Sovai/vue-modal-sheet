@@ -171,7 +171,10 @@ function handleDragEnd(ctx) {
   // Handle Drag
 
   // drag stop position > 1/3 of the sheet => set to Open
-  if (windowHeight.value - axisY.value > windowHeight.value / 3) {
+  if (
+    windowHeight.value - (axisY.value - DRAG_BAR_HEIGHT) >
+    windowHeight.value / 3
+  ) {
     setOpen();
     return;
   } else {
