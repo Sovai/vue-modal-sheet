@@ -1,4 +1,5 @@
 <template>
+  <button @click="test">Apply</button>
   <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef">
     <div class="bar"></div>
     <h2>Sheet Title</h2>
@@ -23,9 +24,41 @@ import { useGesture } from "@vueuse/gesture";
 import {
   useMotionControls,
   useMotionProperties,
+  useMotion,
   useSpring,
+  useMotionTransitions,
 } from "@vueuse/motion";
 import { nextTick, onMounted, ref } from "vue";
+// const props = defineProps({
+//   showCloseButton: {
+//     type: Boolean,
+//     default: true,
+//   },
+//   title: {
+//     type: String,
+//     default: "",
+//   },
+//   subtitle: {
+//     type: String,
+//     default: "",
+//   },
+//   openY: {
+//     type: Number,
+//     default: 0.1,
+//   },
+//   halfY: {
+//     type: Number,
+//     default: 0.8,
+//   },
+//   defaultState: {
+//     type: String,
+//     default: "close",
+//   },
+//   barColor: {
+//     type: String,
+//     default: "#16192A",
+//   },
+// });
 
 const sheetRef = ref();
 let sheetContent = ref(0);
@@ -37,10 +70,17 @@ const DRAG_BAR_HEIGHT = 100;
 let windowHeight = ref(0);
 
 const { motionProperties } = useMotionProperties(sheetRef);
-console.log("motionProp: ", motionProperties);
+const { push, stop } = useMotionTransitions(motionProperties);
+const transitionProps = { type: "keyframe", ease: "linear", duration: 150 };
+
+console.log("motionProp: ", { motionProperties });
+
 const { set } = useSpring(motionProperties);
 // const { set } = useMotionControls(motionProperties);
 
+function test() {
+  push("y", 100, motionProperties, transitionProps);
+}
 onMounted(() => {
   calculateHeight();
 });
@@ -65,11 +105,15 @@ function calculateHeight() {
 
     // set sheet to hidden
     axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
-
-    set({
-      x: 0,
-      y: axisY.value,
+    push("y", axisY.value, motionProperties, {
+      type: "spring",
+      bounce: 0,
     });
+
+    // set({
+    //   x: 0,
+    //   y: axisY.value,
+    // });
   });
 }
 function handleDrag(ctx) {
@@ -77,11 +121,14 @@ function handleDrag(ctx) {
     movement: [x, y],
   } = ctx;
   let setY = axisY.value + y;
+  console.log("setY: ", setY);
+  if (setY < sheetContent.value) return;
+  push("y", setY, motionProperties, transitionProps);
 
-  set({
-    x: 0,
-    y: setY,
-  });
+  // set({
+  //   x: 0,
+  //   y: setY,
+  // });
 
   state.value = "dragging";
 }
@@ -120,18 +167,21 @@ function handleDragEnd(ctx) {
 
 function setOpen() {
   axisY.value = windowHeight.value - sheetContent.value;
-  set({
-    x: 0,
-    y: axisY.value,
-  });
+  push("y", axisY.value, motionProperties, transitionProps);
+
+  // set({
+  //   x: 0,
+  //   y: axisY.value,
+  // });
 }
 function setClose() {
   axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
+  push("y", axisY.value, motionProperties, transitionProps);
 
-  set({
-    x: 0,
-    y: axisY.value,
-  });
+  // set({
+  //   x: 0,
+  //   y: axisY.value,
+  // });
 }
 </script>
 
