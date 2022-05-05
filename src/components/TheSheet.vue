@@ -67,7 +67,7 @@ let sheetContent = ref(0);
 let state = ref();
 let axisY = ref(0);
 const DRAG_BAR_HEIGHT = 100;
-const BOTTOM_PADDING = 500;
+const BOTTOM_PADDING = 800;
 
 let windowHeight = ref(0);
 
@@ -224,7 +224,7 @@ function setClose() {
   max-height: 95%;
   margin: 0;
   user-select: none;
-  padding-bottom: 500px;
+  padding-bottom: 800px;
   -webkit-overflow-scrolling: touch;
 
   button.active {
