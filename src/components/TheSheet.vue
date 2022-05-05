@@ -90,9 +90,6 @@ console.log("motionProp: ", { motionProperties });
 const { set } = useSpring(motionProperties);
 // const { set } = useMotionControls(motionProperties);
 
-function test() {
-  push("y", 100, motionProperties, selectedProp.value);
-}
 onMounted(() => {
   calculateHeight();
 });
@@ -134,7 +131,7 @@ function handleDrag(ctx) {
   } = ctx;
   let setY = axisY.value + y;
   console.log("setY: ", setY);
-  if (setY < sheetContent.value) return;
+  // if (setY < sheetContent.value) return;
   push("y", setY, motionProperties, selectedProp.value);
 
   // set({
