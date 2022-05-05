@@ -1,5 +1,6 @@
 <template>
-  <button @click="test">Apply</button>
+  <button @click="selectedProp = spring">Spring</button>
+  <button @click="selectedProp = keyFrame">Keyframe</button>
   <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef">
     <div class="bar"></div>
     <h2>Sheet Title</h2>
@@ -71,15 +72,26 @@ let windowHeight = ref(0);
 
 const { motionProperties } = useMotionProperties(sheetRef);
 const { push, stop } = useMotionTransitions(motionProperties);
-const transitionProps = { type: "keyframe", ease: "linear", duration: 0 };
-
+const spring = {
+  stiffness: 550,
+  damping: 30,
+  restDelta: 0.01,
+  restSpeed: 10,
+};
+const keyFrame = {
+  type: "keyframe",
+  ease: "linear",
+  duration: 0,
+  delay: 0,
+};
+let selectedProp = ref(keyFrame);
 console.log("motionProp: ", { motionProperties });
 
 const { set } = useSpring(motionProperties);
 // const { set } = useMotionControls(motionProperties);
 
 function test() {
-  push("y", 100, motionProperties, transitionProps);
+  push("y", 100, motionProperties, selectedProp.value);
 }
 onMounted(() => {
   calculateHeight();
@@ -123,7 +135,7 @@ function handleDrag(ctx) {
   let setY = axisY.value + y;
   console.log("setY: ", setY);
   if (setY < sheetContent.value) return;
-  push("y", setY, motionProperties, transitionProps);
+  push("y", setY, motionProperties, selectedProp.value);
 
   // set({
   //   x: 0,
@@ -168,8 +180,8 @@ function handleDragEnd(ctx) {
 function setOpen() {
   axisY.value = windowHeight.value - sheetContent.value;
   push("y", axisY.value, motionProperties, {
-    ...transitionProps,
-    duration: 200,
+    ...selectedProp.value,
+    duration: 150,
   });
 
   // set({
@@ -180,8 +192,8 @@ function setOpen() {
 function setClose() {
   axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
   push("y", axisY.value, motionProperties, {
-    ...transitionProps,
-    duration: 200,
+    ...selectedProp.value,
+    duration: 150,
   });
 
   // set({
