@@ -71,7 +71,7 @@ let windowHeight = ref(0);
 
 const { motionProperties } = useMotionProperties(sheetRef);
 const { push, stop } = useMotionTransitions(motionProperties);
-const transitionProps = { type: "keyframe", ease: "linear", duration: 150 };
+const transitionProps = { type: "keyframe", ease: "linear", duration: 0 };
 
 console.log("motionProp: ", { motionProperties });
 
@@ -167,7 +167,10 @@ function handleDragEnd(ctx) {
 
 function setOpen() {
   axisY.value = windowHeight.value - sheetContent.value;
-  push("y", axisY.value, motionProperties, transitionProps);
+  push("y", axisY.value, motionProperties, {
+    ...transitionProps,
+    duration: 200,
+  });
 
   // set({
   //   x: 0,
@@ -176,7 +179,10 @@ function setOpen() {
 }
 function setClose() {
   axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
-  push("y", axisY.value, motionProperties, transitionProps);
+  push("y", axisY.value, motionProperties, {
+    ...transitionProps,
+    duration: 200,
+  });
 
   // set({
   //   x: 0,
