@@ -1,6 +1,7 @@
 <template>
-  <button @click="selectedProp = spring">Spring</button>
+  <button @click="selectedProp === spring">Spring</button>
   <button @click="selectedProp = keyFrame">Keyframe</button>
+
   <div class="sheet-wrapper" v-motion="'demo'" ref="sheetRef">
     <div class="bar"></div>
     <h2>Sheet Title</h2>
@@ -130,7 +131,13 @@ function handleDrag(ctx) {
     movement: [x, y],
   } = ctx;
   let setY = axisY.value + y;
-  console.log("setY: ", setY);
+  console.log({
+    y,
+    axisY: axisY.value,
+    setY,
+    sheetContent: sheetContent.value,
+    windowHeight: windowHeight.value,
+  });
   // if (setY < sheetContent.value) return;
   push("y", setY, motionProperties, selectedProp.value);
 
@@ -178,7 +185,7 @@ function setOpen() {
   axisY.value = windowHeight.value - sheetContent.value;
   push("y", axisY.value, motionProperties, {
     ...selectedProp.value,
-    duration: 150,
+    duration: 100,
   });
 
   // set({
@@ -190,7 +197,7 @@ function setClose() {
   axisY.value = windowHeight.value - DRAG_BAR_HEIGHT;
   push("y", axisY.value, motionProperties, {
     ...selectedProp.value,
-    duration: 150,
+    duration: 100,
   });
 
   // set({
@@ -217,6 +224,9 @@ function setClose() {
   margin: 0;
   user-select: none;
 
+  button.active {
+    background-color: red;
+  }
   .bar {
     width: 42px;
     height: 4px;
