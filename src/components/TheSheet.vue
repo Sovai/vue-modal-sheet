@@ -112,7 +112,7 @@ useGesture(
     domTarget: sheetRef,
     drag: {
       filterTaps: true,
-      preventWindowScrollY: true,
+      // preventWindowScrollY: true,
       useTouch: true,
     },
   }
