@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import { MotionPlugin } from "@vueuse/motion";
 import { GesturePlugin } from "@vueuse/gesture";
-
+import "./assets/style.css";
 import App from "./App.vue";
 import router from "./router";
 

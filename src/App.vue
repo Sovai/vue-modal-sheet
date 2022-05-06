@@ -17,10 +17,11 @@ body {
   margin: 0;
 }
 .app-container {
+  padding: 0;
+  margin: 0;
   background: black;
   position: relative;
-  height: 100vh;
+  height: 120vh;
   width: 100vw;
-  // overflow: hidden;
 }
 </style>
