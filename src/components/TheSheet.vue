@@ -16,11 +16,8 @@
             </div>
           </div>
           <div v-if="showCloseButton" class="sheet-close-btn">
-            <img
-              src="@/assets/images/close-pane.svg"
-              alt="close"
-              @click="setClose()"
-            />
+            <!-- @/assets/images/close-pane.svg -->
+            <img src="" alt="close" @click="setClose()" />
           </div>
         </slot>
         <div class="sheet-content">
