@@ -1,21 +1,31 @@
 <template>
   <button @click="selectedProp === spring">Spring</button>
   <button @click="selectedProp = keyFrame">Keyframe</button>
-
-  <div class="sheet-wrapper" ref="sheetRef">
-    <div class="bar"></div>
-    <h2>Sheet Title</h2>
-    <div class="sheet-content">
-      Lorem ipsum, dolor sit amet consectetur adipisicing elit. Totam doloribus
-      expedita quod nesciunt, eius voluptas? Dolorum amet odio aliquid rem,
-      itaque quae, suscipit architecto aspernatur dignissimos minus, possimus
-      blanditiis ea?
-      <button>Click</button>
-      <div style="margin: 30px 0" v-for="i in 10" :key="i">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati
-        aliquam molestiae ad delectus maiores libero, suscipit nam ullam atque,
-        temporibus, a ab harum cupiditate minus velit! Itaque explicabo sit
-        repellendus?
+  <div class="sheet-wrapper" :data-open="state === 'open' ? 1 : 0">
+    <div class="sheet-overlay-bg" @click="setClose()"></div>
+    <div class="modal-sheet" ref="sheetRef">
+      <div class="bar"></div>
+      <div class="card">
+        <slot name="header">
+          <div class="flex justify-space-between align-center st-sticky-header">
+            <div>
+              <div v-if="title" class="sheet-title">{{ title }}</div>
+              <div v-if="subtitle" class="sheet-subtitle st-margin-16-top">
+                {{ subtitle }}
+              </div>
+            </div>
+          </div>
+          <div v-if="showCloseButton" class="sheet-close-btn">
+            <img
+              src="@/assets/images/close-pane.svg"
+              alt="close"
+              @click="setClose()"
+            />
+          </div>
+        </slot>
+        <div class="sheet-content">
+          <slot></slot>
+        </div>
       </div>
     </div>
   </div>
@@ -27,36 +37,36 @@ import { useMotionProperties, useMotionTransitions } from "@vueuse/motion";
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import { useLockScroll } from "@/helpers/lockScroll";
 
-// const props = defineProps({
-//   showCloseButton: {
-//     type: Boolean,
-//     default: true,
-//   },
-//   title: {
-//     type: String,
-//     default: "",
-//   },
-//   subtitle: {
-//     type: String,
-//     default: "",
-//   },
-//   openY: {
-//     type: Number,
-//     default: 0.1,
-//   },
-//   halfY: {
-//     type: Number,
-//     default: 0.8,
-//   },
-//   defaultState: {
-//     type: String,
-//     default: "close",
-//   },
-//   barColor: {
-//     type: String,
-//     default: "#16192A",
-//   },
-// });
+const props = defineProps({
+  showCloseButton: {
+    type: Boolean,
+    default: true,
+  },
+  title: {
+    type: String,
+    default: "",
+  },
+  subtitle: {
+    type: String,
+    default: "",
+  },
+  openY: {
+    type: Number,
+    default: 0.1,
+  },
+  halfY: {
+    type: Number,
+    default: 0.8,
+  },
+  defaultState: {
+    type: String,
+    default: "close",
+  },
+  barColor: {
+    type: String,
+    default: "#16192A",
+  },
+});
 onBeforeUnmount(async () => {
   await nextTick();
   const { clearLockScroll } = useLockScroll(
@@ -173,15 +183,14 @@ function handleDragEnd(ctx) {
 
 async function setOpen() {
   await nextTick();
-  const { lockScroll, unlockScroll } = useLockScroll(
-    document.querySelector("html body")
-  );
+  const { lockScroll } = useLockScroll(document.querySelector("html body"));
   lockScroll();
   axisY.value = windowHeight.value - sheetContent.value + BOTTOM_PADDING;
   push("y", axisY.value, motionProperties, {
     ...selectedProp.value,
     duration: 100,
   });
+  state.value = "open";
 }
 async function setClose() {
   await nextTick();
@@ -192,11 +201,38 @@ async function setClose() {
     ...selectedProp.value,
     duration: 100,
   });
+  state.value = "close";
 }
 </script>
 
 <style lang="scss" scoped>
-.sheet-wrapper {
+.sheet-wrapper[data-open="1"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.sheet-overlay-bg {
+  transition: all 100ms linear 0ms;
+}
+.sheet-wrapper[data-open="1"] .sheet-overlay-bg {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    132.34deg,
+    rgba(73, 73, 73, 0.2) 14%,
+    rgba(73, 73, 73, 0.1) 85.8%
+  );
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+}
+.modal-sheet {
   touch-action: none;
   background-color: white;
   padding: 0 16px;
@@ -224,9 +260,37 @@ async function setClose() {
     background-color: rgb(22, 25, 42);
     cursor: pointer;
   }
-  h2 {
-    font-size: 1.5rem;
-    font-weight: bold;
+
+  .st-sticky-header {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    z-index: 13;
+    padding: 16px 0 10px 0;
+    background: white;
+  }
+  .sheet-title {
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 18px;
+    color: #191d2f;
+  }
+  .sheet-subtitle {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: #9496ac;
+  }
+  .sheet-close-btn {
+    cursor: pointer;
+    z-index: 1001;
+    position: absolute;
+    right: 16px;
+    top: 21px;
+  }
+  .sheet-content {
+    overflow-y: auto;
+    max-height: 95vh;
   }
 }
 </style>
